@@ -1,3 +1,5 @@
+// this work available at http://www.generation5.org/content/2003/gahelloworld.asp
+// © James Matthews, 2003
 
 #pragma warning(disable:4786)		// disable debug warning
 

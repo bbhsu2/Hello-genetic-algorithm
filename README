@@ -1,7 +1,6 @@
 Terse Hello World implementation in multiple languages using a simple genetic algorithm.
 
-This work inspired by: http://www.generation5.org/content/2003/gahelloworld.asp
+Non-C++ versions inspired by: http://www.generation5.org/content/2003/gahelloworld.asp
+C++ version © James Matthews, 2003
 
 Forked from https://github.com/rheide/Hello-genetic-algorithm
-
-Hereby given to the public domain.
