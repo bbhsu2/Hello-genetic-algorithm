@@ -1,13 +1,14 @@
-!http://www.linuxquestions.org/questions/programming-9/fortran-90-how-do-i-use-random_number-and-random_seed-913870/
 module mod_simulation
     implicit none
     integer, parameter             :: GA_POPSIZE = 2048;
     real, parameter                :: GA_ELITRATE = 0.10;
-    real, parameter                :: GA_MUTATIONRATE = 25  != 0.25;
+    real, parameter                :: GA_MUTATIONRATE = 0.25;
     character(len = 12), parameter :: GA_TARGET = "Hello world!";
     type, public :: typ_ga
         integer                            :: fitness
         character(len = len(GA_TARGET))    :: str
+        contains
+            procedure :: GetFitness => calc_fitness
         end type typ_ga
     type(typ_ga), dimension(GA_POPSIZE) :: population
     type(typ_ga), dimension(GA_POPSIZE) :: buffer
@@ -55,17 +56,18 @@ contains
                 end if
             end do
         end subroutine GenerateString
-    integer function fitness(value)
-        character(len = len(GA_TARGET)), intent(in) :: value
-        integer :: i
-        do i = 1, len(GA_TARGET)
-            fitness = fitness + abs( ichar(value(i:i)) - ichar(GA_TARGET(i:i)))
+    subroutine calc_fitness(this)
+        class(typ_ga) :: this
+        integer :: i, temp
+        do i = 1, len(this%str)
+            temp = temp + abs( ichar(this%str(i:i)) - ichar(GA_TARGET(i:i)))
             end do
-        end function fitness
+        this%fitness = temp
+        temp = 0
+        end subroutine calc_fitness
     subroutine sort
         type(typ_ga) :: temp1
-        type(typ_ga) :: temp2
-        integer j,k
+        integer i,j,k
         do j = 1, GA_POPSIZE - 1
             do k = j+1, GA_POPSIZE
                 if (population(j)%fitness > population(k)%fitness) then
@@ -73,16 +75,11 @@ contains
                     population(k) = population(j)
                     population(j) = temp1
                     end if
-                if(buffer(j)%fitness > buffer(k)%fitness) then
-                    temp2 = buffer(k)
-                    buffer(k) = buffer(j)
-                    buffer(j) = temp2
-                    end if
                 end do
             end do
         end subroutine sort
     subroutine mate
-        integer, parameter :: esize = int(GA_POPSIZE * GA_ELITRATE)
+        integer, parameter :: esize = 1500 ! = int(GA_POPSIZE * GA_ELITRATE)
         integer :: i, j, i1, i2, spos, pos
         real :: x
         buffer(1:esize) = population(1:esize)
@@ -90,33 +87,33 @@ contains
             i1 = int(rand(0)*( (GA_POPSIZE / 2) + 1 - 0 ) ) + 0
             i2 = int(rand(0)*( (GA_POPSIZE / 2) + 1 - 0 ) ) + 0
             spos = int(rand(0)*( (len(GA_TARGET) + 1 - 0 ) ) ) + 0
-            buffer(i)%str = population(i1)%str(1:spos) // population(i2)%str(spos:len(GA_TARGET)) !do we need to recalc fitness?
+            buffer(i)%str = population(i1)%str(1:spos) // population(i2)%str(spos:len(GA_TARGET))
             call random_number(x)
             if (x < GA_MUTATIONRATE) then
-                pos = int(rand(0)*( (len(GA_TARGET) + 1 - 0 ) ) ) + 0
+                pos = int(rand(0)*( (len(GA_TARGET) -1 + 1 - 0 ) ) ) + 0
+                call random_number(x)
                 buffer(i)%str = buffer(i)%str(1:pos) // char(RandNum(x, 33, 125)) &
                     // buffer(i)%str(pos + 1 : len(buffer(i)%str) - pos -1)
                 end if
             end do
-        do j = 1,GA_POPSIZE
-            buffer(j)%fitness = fitness(buffer(j)%str)
-            end do
         end subroutine mate
     subroutine swap
-        type(typ_ga), dimension(GA_POPSIZE) :: temp
+        type(typ_ga), dimension(:), allocatable :: temp
+        allocate(temp(GA_POPSIZE))
         temp = population
         population = buffer
-        buffer= temp
+        buffer = temp
+        deallocate(temp)
         end subroutine swap
     subroutine init
         integer :: i
         call GenerateString
-!        write(*,*) population
-!        write(*,*) buffer
-!        pause
         do while (.true.)
+            do i = 1, 2048
+                call population(i)%GetFitness
+                end do
             call sort
-            write(*,*) 'Fitness:', fitness(population(1)%str), 'str:', population(1)%str
+            write(*,*) 'Fitness:', population(1)%fitness, 'str:', population(1)%str
             if (population(1)%fitness == 0) then
                 exit
                 end if
@@ -124,8 +121,7 @@ contains
             call swap
             end do
         end subroutine init
-        end module mod_simulation
-
+end module mod_simulation
 
 program main
     use mod_simulation
