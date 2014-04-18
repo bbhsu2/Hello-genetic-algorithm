@@ -1,5 +1,6 @@
 *.exe
 */*.*.suo
+*/*.mod
 */bin/*
 */obj/*
 */*/bin/*
