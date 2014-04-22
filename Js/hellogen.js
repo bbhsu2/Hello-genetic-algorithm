@@ -46,16 +46,15 @@ function swap(){
 	population = buffer;
 	buffer = temp;
 }
+
 function run(){
 	init();
 	var i = 0;
 	while(true){
 		population.sort( function(a,b){return getFitness(a) - getFitness(b)});
-		ul = document.getElementById("displayList"),
-		li = document.createElement("li");
-		li.innerHTML='<li>' + 'Best(' + getFitness(population[0]) + '):' + population[0]+'</li>';
-		ul.appendChild(li);
-		//ul.insertBefore(li, ul.getElementsByTagName("li")[0]);
+		
+		$("#displayList").prepend('<li>' + 'Best(' + getFitness(population[0]) + '):' + population[0]+'</li>').hide().slideDown("fast");
+				//ul.insertBefore(li, ul.getElementsByTagName("li")[0]);
 		if(getFitness(population[0]) === 0)
 			break;
 		mate();
@@ -64,3 +63,8 @@ function run(){
 	}
 }
 run()
+
+		//ul = document.getElementById("displayList"),
+		//li = document.createElement("li");
+		//li.innerHTML='<li>' + 'Best(' + getFitness(population[0]) + '):' + population[0]+'</li>';
+		//ul.appendChild(li);

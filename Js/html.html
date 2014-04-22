@@ -2,17 +2,50 @@
 <html>
 <head>
 <title> Hello World Genetic Algorithm!</title>
+
+<!-- Bootstrap -->
+    <!--<link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <script src="js/respond.js"></script>-->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </head>
 
-<body>
-	<h1> Outputs</h1>
-	<h2>
-	Target: Hello World!
-	</h2>
-	<ul id="displayList">
-	</ul>
+<body class="container">
+<div class="row">
+    <h1> Hello World Genetic Algorithm</h1>
+    <article class="col-md-8">
+            
+    <h2>Target: Hello World!</h2>
+        <p>
+            This algorithm starts by populating 2,048 12-character words to a list.  Each character is randomly generated.  Then, a fitness calculation is
+            done on each word, and the list is sorted in ascending order-- the lowest fitness is the citizen most like the 12-character sequence "Hello world!"
+            <br><br><br>
+            The top 15% of citizens in terms of fitness are unchanged, and the other 85% are randomly mated with each other, making new citizens.  Then, 25%
+            of all citizens are randomly mutated by 1 character.  This new population is sorted by fitness, and the algorithm continues to run.
+            <br><br><br>
+            The eventual end result is 12-character sequence that reads "Hello world!"
+            <br><br><br>
+        </p>
 
-	<!--Javascript-->
-	<script src="hellogen.js"></script>
+        <div class="btn-group btn-group-justified">
+            <div class="btn-group">
+                <input type="button" class="btn btn-default" value="Run Again!" onclick="run();">
+            </div>
+            <div class="btn-group">
+                <a href="https://github.com/bbhsu2/Hello-genetic-algorithm" class="btn btn-default">Read more >></a>
+            </div>
+        </div>
+
+    </article>
+
+    <div class="col-md-4">
+        <ul id="displayList"></ul>
+    </div>
+
+</div>
+	<!-- javascript -->
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="hellogen.js"></script>
 </body>
 </html>
